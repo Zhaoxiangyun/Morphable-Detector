@@ -21,14 +21,14 @@ Our code is based on [maskrcnn-benchmark](https://github.com/facebookresearch/ma
 
 Download large scale few detection dataset [here](https://github.com/fanq15/Few-Shot-Object-Detection-Dataset) and covert the data into COCO dataset format. The file structure should look like:
 
-  ```bash
+```
   $ tree data
   dataset
   ├──fsod
       ├── annototation
       │   
       ├── images
-         
+
 ### Training (EM-like approach)
 All of the models are using COCO dataset to pretrain the model. The COCO dataset pretrained model can be found here.
 
