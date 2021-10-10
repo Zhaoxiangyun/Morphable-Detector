@@ -98,6 +98,5 @@ Our pre-trained ResNet-50 models can be downloaded as following:
 
 | name | iterations | AP | AP^{0.5} | model |
 | :---: | :---: | :---: | :---: | :---: |
-| MD (initial training) | 70,000 |   | | [download]() |
-| MD | 70,000 |   | 37.9 | [download]() |
+| MD | 70,000 | 22.2  | 37.9 | [download](https://drive.google.com/file/d/1M78AjPtZzOVrzKYZy1FV-e3mUpJomxpa/view?usp=sharing) |
 
