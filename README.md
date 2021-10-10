@@ -28,6 +28,7 @@ Download large scale few detection dataset [here](https://github.com/fanq15/Few-
       ├── annototation
       │   
       ├── images
+```
 
 ### Training (EM-like approach)
 All of the models are using COCO dataset to pretrain the model. The COCO dataset pretrained model can be found here.
@@ -88,9 +89,6 @@ SOLVER.BASE_LR 0.002
 After the model is trained, we randomly sample 5 samples for each novel category from the test data and use the mean feature vectors for the 5 samples as the prototype for that categpry. 
 To extract the features for test data, run 
 
-```
-
-```
 We provide the mean feature vectors for 5 samples extracted by the pretrained model here.
 
 
