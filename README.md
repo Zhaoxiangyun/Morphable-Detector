@@ -126,8 +126,9 @@ CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --master_port $RND_P
 Our pre-trained ResNet-50 models can be downloaded as following:
 
 | name | iterations | AP | AP^{0.5} | model | Mean Features |
-| :---: | :---: | :---: | :---: | :---: |
+| :---: | :---: | :---: | :---: | :---: | :---:|
 | MD | 70,000 | 22.2  | 37.9 | [download](https://drive.google.com/file/d/1M78AjPtZzOVrzKYZy1FV-e3mUpJomxpa/view?usp=sharing) | [download]() |
+
 
 | name | iterations | AP | AP^{0.5} | Mean Features |
 | :---: | :---: | :---: | :---: | :---: |
