@@ -67,34 +67,27 @@ class FPNPredictor(nn.Module):
         sem_matrix_l = np.ones((num_classes-1,self.feature_size))
 
         self.get_feature = cfg.GET_FEATURE
-        
-        f = open(cfg.SEM_DIR,'r')
-        lines = f.readlines()
-        
-        for i in range(len(lines)):
-            words = lines[i].split(',')
+        if cfg.VISUAL: 
+           f = open(cfg.SEM_DIR,'r')
+           lines = f.readlines()
+           for i in range(len(lines)):
+              words = lines[i].split(',')
+              vec = np.array(words)
+              sem_matrix_v[i,:] = vec
+           f.close()    
+           sem_matrix = sem_matrix_v
+        else:   
+          f = open(cfg.LOAD_SEM_DIR,'r')
+          lines = f.readlines()
+          f.close() 
+          for i in range(num_classes-1):
+            words = lines[i].split(' ')
+            words.remove(words[0])
             vec = np.array(words)
-            sem_matrix_v[i,:] = vec
-        
-        f.close()     
-        f = open(cfg.LOAD_SEM_DIR,'r')
-        
-        lines = f.readlines()
-        f.close()
-        
-        for i in range(num_classes-1):
-          words = lines[i].split(' ')
-          words.remove(words[0])
-          vec = np.array(words)
-          sem_matrix_l[i,:] = vec[0:self.feature_size]
-        
-        if cfg.VISUAL:
-          sem_matrix = sem_matrix_v
-        else:
+            sem_matrix_l[i,:] = vec[0:self.feature_size]       
           sem_matrix = sem_matrix_l 
 
-        self.cls_sem = nn.Linear(representation_size, self.feature_size)
-                   
+        self.cls_sem = nn.Linear(representation_size, self.feature_size)                  
         sem_matrix = torch.from_numpy(sem_matrix)
         sem_matrix = sem_matrix.type(torch.cuda.FloatTensor)
         self.sem_matrix = sem_matrix
