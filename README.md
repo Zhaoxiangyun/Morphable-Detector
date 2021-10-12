@@ -45,7 +45,7 @@ SOLVER.STEPS "(50000,70000)" SOLVER.CHECKPOINT_PERIOD 10000 \
 SOLVER.BASE_LR 0.002  
 ```
 
-Then, we update the feature vectors of the training samples on the trained network, run:
+Then, to update the prototypes, we first extract the features for the training samples by running:
 ```
 export NGPUS=2
 RND_PORT=`shuf -i 4000-7999 -n 1`
