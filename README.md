@@ -31,7 +31,7 @@ Download large scale few detection dataset [here](https://github.com/fanq15/Few-
 ```
 
 ### Training (EM-like approach)
-We follow [FSOD Paper](https://openaccess.thecvf.com/content_CVPR_2020/papers/Fan_Few-Shot_Object_Detection_With_Attention-RPN_and_Multi-Relation_Detector_CVPR_2020_paper.pdf), we pretrain the model using COCO dataset for 200,000 iterations. So, you can download the model [here](), and use it to initilize the network. 
+We follow [FSOD Paper](https://openaccess.thecvf.com/content_CVPR_2020/papers/Fan_Few-Shot_Object_Detection_With_Attention-RPN_and_Multi-Relation_Detector_CVPR_2020_paper.pdf) to pretrain the model using COCO dataset for 200,000 iterations. So, you can download the COCO pretrain model [here](https://drive.google.com/file/d/1KY5Fl5s_MTnop4fTnU5kCSgZnVnUYZwH/view?usp=sharing), and use it to initilize the network. 
 
 We first initialize the prototypes using semantic vectors, then train the network run:
 ```
@@ -86,7 +86,8 @@ SOLVER.BASE_LR 0.002
 
 ### Tests
 
-After the model is trained, we randomly sample 5 samples for each novel category from the test data and use the mean feature vectors for the 5 samples as the prototype for that categpry. 
+After the model is trained, we randomly sample 5 samples for each novel category from the test data and use the mean feature vectors for the 5 samples as the prototype for that categpry. The results with different sample selection may vary a bit. To reproduce the results, we provide the features we extracted from our final model. But you can still extract your own features from your trained model. 
+
 To extract the features for test data, run 
 ```
 export NGPUS=2
@@ -100,7 +101,7 @@ MODEL.RPN.FPN_POST_NMS_TOP_N_TRAIN  2000 \
 SOLVER.IMS_PER_BATCH 4 SOLVER.MAX_ITER 80000 \
 SOLVER.CHECKPOINT_PERIOD 10000000
 ```
-To compute the prototype for each class, run
+To compute the prototype for each class (online morphing), run
 
 ```
 cd features
@@ -116,7 +117,7 @@ Then run test,
 export NGPUS=2
 RND_PORT=`shuf -i 4000-7999 -n 1`
 
-CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --master_port $RND_PORT --nproc_per_node=$NGPUS ./tools/test_sem_net.py --config-file "./configs/fsod/e2e_faster_rcnn_R_50_FPN_1x.yaml" SEM_DIR WHERE_YOU_SAVE_THE_PROTOTYPES VISUAL True OUTPUT_DIR WHERE_YOU_SAVE_THE_MODEL MODEL.RPN.FPN_POST_NMS_TOP_N_TRAIN 2000 FEATURE_SIZE 200 MODEL.ROI_BOX_HEAD.NUM_CLASSES 201 TEST_SCALE 0.8
+CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --master_port $RND_PORT --nproc_per_node=$NGPUS ./tools/test_sem_net.py --config-file "./configs/fsod/e2e_faster_rcnn_R_50_FPN_1x.yaml" SEM_DIR WHERE_YOU_SAVE_THE_PROTOTYPES VISUAL True OUTPUT_DIR WHERE_YOU_SAVE_THE_MODEL MODEL.RPN.FPN_POST_NMS_TOP_N_TRAIN 2000 FEATURE_SIZE 200 MODEL.ROI_BOX_HEAD.NUM_CLASSES 201 TEST_SCALE 0.7
 
 ```
 
@@ -127,14 +128,14 @@ Our pre-trained ResNet-50 models can be downloaded as following:
 
 | name | iterations | AP | AP^{0.5} | model | Mean Features |
 | :---: | :---: | :---: | :---: | :---: | :---:|
-| MD | 70,000 | 22.2  | 37.9 | [download](https://drive.google.com/file/d/1M78AjPtZzOVrzKYZy1FV-e3mUpJomxpa/view?usp=sharing) | [download]() |
+| MD | 70,000 | 22.2  | 37.9 | [download](https://drive.google.com/file/d/1M78AjPtZzOVrzKYZy1FV-e3mUpJomxpa/view?usp=sharing) | [download](https://drive.google.com/file/d/126GrhySpndrh29TMDavzqKNIppAaMZM_/view?usp=sharing) |
 
 
 | name | iterations | AP | AP^{0.5} | Mean Features |
 | :---: | :---: | :---: | :---: | :---: |
-| MD 1-shot | 70,000 |   |  | [download](https://drive.google.com/file/d/1M78AjPtZzOVrzKYZy1FV-e3mUpJomxpa/view?usp=sharing) |
-| MD 3-shot | 70,000 |   |  | [download](https://drive.google.com/file/d/1M78AjPtZzOVrzKYZy1FV-e3mUpJomxpa/view?usp=sharing) |
-| MD 5-shot | 70,000 | 22.2  | 37.9 | [download](https://drive.google.com/file/d/1M78AjPtZzOVrzKYZy1FV-e3mUpJomxpa/view?usp=sharing) |
+| MD 1-shot | 70,000 | 19.6  | 33.3 | [download](https://drive.google.com/file/d/1sMDw9lBytrJdWu_tf91zo3pvG40SA3M0/view?usp=sharing) |
+| MD 2-shot | 70,000 | 20.9  | 35.7 | [download](https://drive.google.com/file/d/1Tnc80Ztq4rbDAs0ojKB3QiTikMud5Vhu/view?usp=sharing) |
+| MD 5-shot | 70,000 | 22.2  | 37.9 | [download](https://drive.google.com/file/d/126GrhySpndrh29TMDavzqKNIppAaMZM_/view?usp=sharing) |
 
 
 
