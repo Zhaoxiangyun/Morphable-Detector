@@ -1,5 +1,5 @@
 ## Morphable Detector for Object Detection on Demand
-This is a PyTorch implementation of the [Morphable Detector]() paper.
+This is a PyTorch implementation of the [Morphable Detector](https://arxiv.org/pdf/2110.04917.pdf) paper.
 ```
 @inproceedings{zhaomorph,
   author  = {Xiangyun Zhao, Xu Zou, Ying Wu},
