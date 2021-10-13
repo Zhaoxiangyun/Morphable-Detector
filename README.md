@@ -1,6 +1,4 @@
 # Morphable Detector for Object Detection on Demand
-This is a PyTorch implementation of
-
 (ICCV 2021) PyTorch implementation of the paper [Morphable Detector for Object Detection on Demand](https://arxiv.org/pdf/2110.04917.pdf).
 
 <p align="center">
