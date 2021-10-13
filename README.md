@@ -4,7 +4,7 @@ This is a PyTorch implementation of
 (ICCV 2020) PyTorch implementation of the paper [Morphable Detector for Object Detection on Demand](https://arxiv.org/pdf/2110.04917.pdf).
 
 <p align="center">
-<img src="https://github.com/Zhaoxiangyun/Morphable-Detector/img/md.PNG" width="800px" alt="teaser">
+<img src="https://github.com/Zhaoxiangyun/Morphable-Detector/blob/master/img/md.PNG" width="800px" alt="teaser">
 </p>
 
 If our project is helpful for your research, please consider citing:
