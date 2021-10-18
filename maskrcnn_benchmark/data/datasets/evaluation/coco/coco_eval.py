@@ -57,32 +57,32 @@ def do_coco_evaluation(
             if output_folder:
                 file_path = os.path.join(output_folder, iou_type + ".json")
             
-            evaluate_label = []
-            #evaluate_label = [1,2,3,4,5,6,7,9,15,16,17,18,19,20,40,57,58,59,61,63]
-            evaluate_label = [2,3,17,19,48,38,69,54,64,73,30]
-            #evaluate_label = [3,7,17,18,37,49,48,69,67,34]
-            id_list = dataset.coco.getCatIds()
-            real_label_list = []
-            for label in evaluate_label:
-                
-                real_label_list.append(id_list[label-1])
-
-            
-            print('Start to evaluate on novel categories,')
+#            evaluate_label = []
+#            #evaluate_label = [1,2,3,4,5,6,7,9,15,16,17,18,19,20,40,57,58,59,61,63]
+#            evaluate_label = [2,3,17,19,48,38,69,54,64,73,30]
+#            #evaluate_label = [3,7,17,18,37,49,48,69,67,34]
+#            id_list = dataset.coco.getCatIds()
+#            real_label_list = []
+#            for label in evaluate_label:
+#                
+#                real_label_list.append(id_list[label-1])
+#
+#            
+#            print('Start to evaluate on novel categories,')
+#            res = evaluate_predictions_on_coco(
+#                dataset.coco, coco_results[iou_type], file_path, iou_type, real_label_list)
+#            print('Start to evaluate on seen categories,')
+#
+#            real_seen_label_list = []
+#            for label in id_list:
+#                if label not in real_label_list:
+#                    real_seen_label_list.append(label)
+#            res = evaluate_predictions_on_coco(
+#                dataset.coco, coco_results[iou_type], file_path, iou_type, real_seen_label_list)
+#
+            print('Start to evaluate on all categories,')
             res = evaluate_predictions_on_coco(
-                dataset.coco, coco_results[iou_type], file_path, iou_type, real_label_list)
-            print('Start to evaluate on seen categories,')
-
-            real_seen_label_list = []
-            for label in id_list:
-                if label not in real_label_list:
-                    real_seen_label_list.append(label)
-            res = evaluate_predictions_on_coco(
-                dataset.coco, coco_results[iou_type], file_path, iou_type, real_seen_label_list)
-
-         #   print('Start to evaluate on all categories,')
-         #   res = evaluate_predictions_on_coco(
-         #       dataset.coco, coco_results[iou_type], file_path, iou_type)
+                dataset.coco, coco_results[iou_type], file_path, iou_type)
 
 
 

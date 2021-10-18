@@ -20,12 +20,9 @@ class ROIBoxHead(torch.nn.Module):
             cfg, self.feature_extractor.out_channels,ignore_labels=ignore_labels)
         self.post_processor = make_roi_box_post_processor(cfg)
         self.loss_evaluator = make_roi_box_loss_evaluator(cfg)
-        self.get_feature = cfg.FEATURE
-        if cfg.FINE:
-            for param in self.feature_extractor.parameters():
-              param.requires_grad = False
+        self.get_feature = cfg.GET_FEATURE
 
-    def forward(self, features, proposals, targets=None, ignore_labels=None):
+    def forward(self, features, proposals, targets=None):
         """
         Arguments:
             features (list[Tensor]): feature-maps from possibly several levels
@@ -58,8 +55,7 @@ class ROIBoxHead(torch.nn.Module):
             result = self.post_processor((class_logits, box_regression), proposals)
             return x, result, {}
         loss_classifier, loss_box_reg = self.loss_evaluator(
-            [class_logits], [box_regression], ignore_labels=ignore_labels
-        )
+            [class_logits], [box_regression])
         return (
             x,
             proposals,
@@ -67,10 +63,10 @@ class ROIBoxHead(torch.nn.Module):
         )
 
 
-def build_roi_box_head(cfg, in_channels,ignore_labels=None):
+def build_roi_box_head(cfg, in_channels):
     """
     Constructs a new box head.
     By default, uses ROIBoxHead, but if it turns out not to be enough, just register a new class
     and make it a parameter in the config
     """
-    return ROIBoxHead(cfg, in_channels, ignore_labels=ignore_labels)
+    return ROIBoxHead(cfg, in_channels)

@@ -36,17 +36,9 @@ def build_dataset(dataset_list, transforms, dataset_catalog, is_train=True):
         args = data["args"]
         # for COCODataset, we want to remove images without annotations
         # during training
-        if data["factory"] == "COCODataset":
+        if data["factory"] == "FsodDataset":
             args["remove_images_without_annotations"] = is_train
-        if data["factory"] == "PascalVOCDataset":
-            args["use_difficult"] = not is_train
-        if data["factory"] == "KittiDataset":
-            args["use_difficult"] = not is_train
-        if data["factory"] == "WilderfaceDataset":
-            args["use_difficult"] = not is_train
-        if data["factory"] == "LisaDataset":
-            args["use_difficult"] = not is_train
- 
+
         args["transforms"] = transforms
         # make dataset from factory
         dataset = factory(**args)
@@ -163,6 +155,8 @@ def make_data_loader(cfg, is_train=True, is_distributed=False, start_iter=0, shu
 
     # If bbox aug is enabled in testing, simply set transforms to None and we will apply transforms later
     transforms = None if not is_train and cfg.TEST.BBOX_AUG.ENABLED else build_transforms(cfg, is_train)
+    if cfg.FEATURE:
+        transforms = build_transforms(cfg, False)
     datasets = build_dataset(dataset_list, transforms, DatasetCatalog, is_train)
 
     if is_train:

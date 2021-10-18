@@ -29,7 +29,7 @@ class GeneralizedRCNN(nn.Module):
         self.backbone = build_backbone(cfg)
         self.rpn = build_rpn(cfg, self.backbone.out_channels)
         self.get_feature = cfg.GET_FEATURE
-        self.roi_heads = build_roi_heads(cfg, self.backbone.out_channels, ignore_labels=self.ignore_labels)
+        self.roi_heads = build_roi_heads(cfg, self.backbone.out_channels)
 
     def forward(self, images, targets=None, ignore_labels=None):
         """

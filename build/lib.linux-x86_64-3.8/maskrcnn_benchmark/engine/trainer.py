@@ -68,71 +68,8 @@ def do_train(
               checkpointer.save("model_{:07d}".format(iteration), **arguments)
             if iteration == max_iter:
                checkpointer.save("model_final", **arguments)
-
-
             continue
-       # try:
-       #     
-       #   images, targets, ids = next(data_1)
-       #   targets = [target.to(device) for target in targets]
-       #   voc_labels = [1,2,3,4,5,6,7,9,15,16,17,18,19,20,40,57,58,59,61,63]
-       #   keep_labels = []
-       #   for lab in voc_labels:
-       #       if lab not in ignore_labels:
-       #           keep_labels.append(lab)
-       #   for ti in range(len(targets)):
-       #       target = targets[ti]
-       #       labels = target.get_field('labels')
-       #       new_target = []
-       #       for lab in keep_labels:
-       #           inds = labels == lab
-       #           new_target.append(target[inds])
-       #       
-       #       new_target =cat_boxlist(new_target)  
-       #       targets[ti] = new_target
 
-       #   while(any(len(target) < 1 for target in targets)):
-       #     try:
-       #          images, targets, ids = next(data_1)
-       #          targets = [target.to(device) for target in targets]
-
-       #          for ti in range(len(targets)):
-       #                target = targets[ti]
-       #                labels = target.get_field('labels')
-       #                new_target = []
-       #                for lab in keep_labels:
-       #                      inds = labels == lab
-       #                      new_target.append(target[inds])
-       #       
-       #                new_target =cat_boxlist(new_target)  
-       #                targets[ti] = new_target
-       #         
-       #     except:
-       #          data_1 = iter(data_loader)
-       #          images, targets, ids = next(data_1)
-       #          targets = [target.to(device) for target in targets]
-
-       #          for ti in range(len(targets)):
-       #                target = targets[ti]
-       #                labels = target.get_field('labels')
-       #                new_target = []
-       #                for lab in keep_labels:
-       #                      inds = labels == lab
-       #                      new_target.append(target[inds])
-       #       
-       #                new_target =cat_boxlist(new_target)  
-       #                targets[ti] = new_target
-
-       # except StopIteration:
-       #     data_1 = iter(data_loader)
-       #     images, targets, ids = next(data_1)
-       #     while(any(len(target) < 1 for target in targets)):
-       #        try:  
-       #           images, targets, ids = next(data_1)
-       #        except:
-       #          data_1 = iter(data_loader)
-       #          images, targets, ids = next(data_1)
- 
         data_time = time.time() - end
         arguments["iteration"] = iteration
 
@@ -140,22 +77,14 @@ def do_train(
 
         images = images.to(device)
         targets = [target.to(device) for target in targets]
-#        skip = False
-#        for ta in targets:
-#            if len(ta) > 50:
-#                skip = True
-#        if skipt:
-#            if iteration % checkpoint_period == 0:
-#              checkpointer.save("model_{:07d}".format(iteration), **arguments)
-#            if iteration == max_iter:
-#               checkpointer.save("model_final", **arguments)
-#
-#
-#            continue
         if get_feature:
             f = open(feature_dir,'a')
+            start_time = time.time()
             feature, proposals =  model(images, targets)
+            end_time = time.time()
+            print("computaton time:", end_time-start_time)
             labels = []
+            
             print(i)
          #   for ta in range(len(targets)):
          #     labels = labels + targets[ta].get_field('labels').tolist()

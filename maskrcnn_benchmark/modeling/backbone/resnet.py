@@ -27,7 +27,6 @@ from maskrcnn_benchmark.layers import Conv2d
 from maskrcnn_benchmark.layers import DFConv2d
 from maskrcnn_benchmark.modeling.make_layers import group_norm
 from maskrcnn_benchmark.utils.registry import Registry
-from ..att_module.att import build_att
 
 
 # ResNet stage specification
@@ -91,7 +90,6 @@ class ResNet(nn.Module):
         stem_module = _STEM_MODULES[cfg.MODEL.RESNETS.STEM_FUNC]
         stage_specs = _STAGE_SPECS[cfg.MODEL.BACKBONE.CONV_BODY]
         transformation_module = _TRANSFORMATION_MODULES[cfg.MODEL.RESNETS.TRANS_FUNC]
-        self.uod = cfg.MODEL.UOD
         # Construct the stem module
         self.stem = stem_module(cfg)
 
@@ -103,17 +101,12 @@ class ResNet(nn.Module):
         stage2_out_channels = cfg.MODEL.RESNETS.RES2_OUT_CHANNELS
         self.stages = []
         self.return_features = {}
-        self.att_list = []
         self.name_list = []
         for stage_spec in stage_specs:
             name = "layer" + str(stage_spec.index)
             stage2_relative_factor = 2 ** (stage_spec.index - 1)
             bottleneck_channels = stage2_bottleneck_channels * stage2_relative_factor
             out_channels = stage2_out_channels * stage2_relative_factor          
-            if self.uod:
-              att = build_att(cfg, out_channels)
-              self.att_list.append(att)
-              self.name_list.append(name) 
             stage_with_dcn = cfg.MODEL.RESNETS.STAGE_WITH_DCN[stage_spec.index -1]
             module = _make_stage(
                 transformation_module,
@@ -134,9 +127,6 @@ class ResNet(nn.Module):
             self.add_module(name, module)
             self.stages.append(name)
             self.return_features[name] = stage_spec.return_features
-        if self.uod:
-           self.att_list = nn.ModuleList(self.att_list)
-
         # Optionally freeze (requires_grad=False) parts of the backbone
         self._freeze_backbone(cfg.MODEL.BACKBONE.FREEZE_CONV_BODY_AT)
 
@@ -156,11 +146,6 @@ class ResNet(nn.Module):
         x = self.stem(x)
         for stage_name in self.stages:
             x = getattr(self, stage_name)(x)
-            if self.uod:
-
-                index = self.name_list.index(stage_name)
-                x = self.att_list[index](x)
-
             if self.return_features[stage_name]:
                 outputs.append(x)
         return outputs

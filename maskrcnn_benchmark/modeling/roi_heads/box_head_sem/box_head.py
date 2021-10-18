@@ -13,11 +13,11 @@ class ROIBoxHead(torch.nn.Module):
     Generic Box Head class.
     """
 
-    def __init__(self, cfg, in_channels, ignore_labels=None):
+    def __init__(self, cfg, in_channels):
         super(ROIBoxHead, self).__init__()
         self.feature_extractor = make_roi_box_feature_extractor(cfg, in_channels)
         self.predictor = make_roi_box_predictor(
-            cfg, self.feature_extractor.out_channels,ignore_labels=ignore_labels)
+            cfg, self.feature_extractor.out_channels)
         self.post_processor = make_roi_box_post_processor(cfg)
         self.loss_evaluator = make_roi_box_loss_evaluator(cfg)
         self.get_feature = cfg.GET_FEATURE

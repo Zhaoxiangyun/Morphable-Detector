@@ -62,7 +62,6 @@ class FastRCNNLossComputation(object):
             labels_per_image = labels_per_image.to(dtype=torch.int64)
 
             # Label background (below the low threshold)
-            bg_inds = matched_idxs == Matcher.BELOW_LOW_THRESHOLD
             labels_per_image[bg_inds] = 0
 
             # Label ignore proposals (between low and high thresholds)
@@ -115,7 +114,7 @@ class FastRCNNLossComputation(object):
         self._proposals = proposals
         return proposals
 
-    def __call__(self, class_logits, box_regression, ignore_labels=None):
+    def __call__(self, class_logits, box_regression):
         """
         Computes the loss for Faster R-CNN.
         This requires that the subsample method has been called beforehand.
@@ -143,17 +142,9 @@ class FastRCNNLossComputation(object):
         regression_targets = cat(
             [proposal.get_field("regression_targets") for proposal in proposals], dim=0
         )
-        if ignore_labels is None:
-          classification_loss = F.cross_entropy(class_logits, labels)
-        else:
-           for i in ignore_labels:
-                
-                index = labels==i
-                labels[index] = 0
-
-
-           classification_loss = F.cross_entropy(class_logits, labels)
-
+        
+        classification_loss = F.cross_entropy(class_logits, labels)
+        
         # get indices that correspond to the regression targets for
         # the corresponding ground truth labels, to be used with
         # advanced indexing

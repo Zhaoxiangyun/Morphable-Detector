@@ -461,7 +461,8 @@ _C.TEST.BBOX_AUG.SCALE_H_FLIP = False
 # ---------------------------------------------------------------------------- #
 _C.OUTPUT_DIR = "."
 _C.GET_FEATURE = False
-_C.VISUAL_VECTOR = False
+_C.FEATURE_SIZE = 200
+_C.VISUAL = False
 _C.SEM_DIR = "."
 _C.FEATURE_DIR = "visual_l_sem.txt"
 _C.TEST_SCALE = 0.8 

@@ -15,19 +15,19 @@ class CombinedROIHeads(torch.nn.ModuleDict):
     def __init__(self, cfg, heads):
         super(CombinedROIHeads, self).__init__(heads)
         self.cfg = cfg.clone()
-        self.get_feature = cfg.FEATURE
+        self.get_feature = cfg.GET_FEATURE
         if cfg.MODEL.MASK_ON and cfg.MODEL.ROI_MASK_HEAD.SHARE_BOX_FEATURE_EXTRACTOR:
             self.mask.feature_extractor = self.box.feature_extractor
         if cfg.MODEL.KEYPOINT_ON and cfg.MODEL.ROI_KEYPOINT_HEAD.SHARE_BOX_FEATURE_EXTRACTOR:
             self.keypoint.feature_extractor = self.box.feature_extractor
 
-    def forward(self, features, proposals, targets=None, ignore_labels=None):
+    def forward(self, features, proposals, targets=None):
         losses = {}
         # TODO rename x to roi_box_features, if it doesn't increase memory consumption
         if self.get_feature:
-           feature = self.box(features, proposals, targets, ignore_labels=ignore_labels)
+           feature = self.box(features, proposals, targets)
            return feature
-        x, detections, loss_box = self.box(features, proposals, targets, ignore_labels=ignore_labels)
+        x, detections, loss_box = self.box(features, proposals, targets)
         losses.update(loss_box)
         if self.cfg.MODEL.MASK_ON:
             mask_features = features
@@ -59,7 +59,7 @@ class CombinedROIHeads(torch.nn.ModuleDict):
         return x, detections, losses
 
 
-def build_roi_heads(cfg, in_channels, ignore_labels=None):
+def build_roi_heads(cfg, in_channels):
     # individually create the heads, that will be combined together
     # afterwards
     roi_heads = []
@@ -67,7 +67,7 @@ def build_roi_heads(cfg, in_channels, ignore_labels=None):
         return []
 
     if not cfg.MODEL.RPN_ONLY:
-        roi_heads.append(("box", build_roi_box_head(cfg, in_channels,ignore_labels=ignore_labels)))
+        roi_heads.append(("box", build_roi_box_head(cfg, in_channels)))
     if cfg.MODEL.MASK_ON:
         roi_heads.append(("mask", build_roi_mask_head(cfg, in_channels)))
     if cfg.MODEL.KEYPOINT_ON:

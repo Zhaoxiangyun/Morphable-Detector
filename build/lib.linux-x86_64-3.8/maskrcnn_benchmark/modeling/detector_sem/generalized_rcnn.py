@@ -28,24 +28,8 @@ class GeneralizedRCNN(nn.Module):
 
         self.backbone = build_backbone(cfg)
         self.rpn = build_rpn(cfg, self.backbone.out_channels)
-        self.finetune=False
-        self.get_feature = cfg.FEATURE
-        if cfg.FINE:
-            self.ignore_labels=None
-            self.finetune = True
-        else:    
-           self.ignore_labels = cfg.IGNORE_LABEL
-        
+        self.get_feature = cfg.GET_FEATURE
         self.roi_heads = build_roi_heads(cfg, self.backbone.out_channels, ignore_labels=self.ignore_labels)
-
-        if self.finetune:
-          for param in self.backbone.parameters():
-            param.requires_grad = False
-          for param in self.rpn.parameters():
-              param.requires_grad = False
-        #  for param in  self.roi_heads.feature_extractor.parameters():
-        #      param.requires_grad = False
-
 
     def forward(self, images, targets=None, ignore_labels=None):
         """
@@ -65,18 +49,11 @@ class GeneralizedRCNN(nn.Module):
         images = to_image_list(images)
         features = self.backbone(images.tensors)
         proposals, proposal_losses = self.rpn(images, features, targets)
-        
-        ignore_labels = self.ignore_labels
-      #  try:
-      #    if len(ignore_labels) == 0:
-      #  ignore_labels = None
-      #  except:
-      #      pass
         if self.roi_heads:
           if not self.get_feature: 
-             x, result, detector_losses = self.roi_heads(features, proposals, targets, ignore_labels=ignore_labels)
+             x, result, detector_losses = self.roi_heads(features, proposals, targets)
           else:
-             feature = self.roi_heads(features, targets, targets, ignore_labels=ignore_labels)
+             feature = self.roi_heads(features, targets, targets)
              return feature, targets
 
         else:
